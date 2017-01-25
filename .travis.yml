@@ -49,22 +49,24 @@ matrix:
         edge: true
         github_token: ${GITHUB_TOKEN}
         local_dir: site
+        skip_cleanup: true
         on:
           repo: containous/traefik
           tags: true
       - provider: releases
         api_key: ${GITHUB_TOKEN}
-        file: dist/traefik_*
+        file: dist/traefik*
+        skip_cleanup: true
         file_glob: true
         on:
           repo: containous/traefik
           tags: true
-      - provider: scripts
+      - provider: script
         script: script/deploy.sh
         on:
           repo: containous/traefik
           tags: true
-      - provider: scripts
+      - provider: script
         script: script/deploy-docker.sh
         on:
           repo: containous/traefik
