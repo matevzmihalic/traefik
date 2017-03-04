@@ -26,7 +26,7 @@ func defaultBadHostHandler(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Bad Host", http.StatusInternalServerError)
 }
 
-// headerOptions is a struct for specifying configuration options for the headers middleware.
+// HeaderOptions is a struct for specifying configuration options for the headers middleware.
 type HeaderOptions struct {
 	// AllowedHosts is a list of fully qualified domain names that are allowed. Default is empty list, which allows any and all host names.
 	AllowedHosts []string
@@ -53,7 +53,7 @@ type HeaderOptions struct {
 	// If ContentTypeNosniff is true, adds the X-Content-Type-Options header with the value `nosniff`. Default is false.
 	ContentTypeNosniff bool
 	// If BrowserXssFilter is true, adds the X-XSS-Protection header with the value `1; mode=block`. Default is false.
-	BrowserXssFilter bool
+	BrowserXSSFilter bool
 	// ContentSecurityPolicy allows the Content-Security-Policy header value to be set with a custom value. Default is "".
 	ContentSecurityPolicy string
 	// PublicKey implements HPKP to prevent MITM attacks with forged certificates. Default is "".
@@ -67,7 +67,7 @@ type HeaderOptions struct {
 	CustomResponseHeaders map[string]string
 }
 
-// headers is a middleware that helps setup a few basic security features. A single headerOptions struct can be
+// HeaderStruct is a middleware that helps setup a few basic security features. A single headerOptions struct can be
 // provided to configure which features should be enabled, and the ability to override a few of the default values.
 type HeaderStruct struct {
 	// Customize headers with a headerOptions struct.
@@ -77,7 +77,7 @@ type HeaderStruct struct {
 	badHostHandler http.Handler
 }
 
-// New constructs a new header instance with supplied options.
+// NewHeader constructs a new header instance with supplied options.
 func NewHeader(options ...HeaderOptions) *HeaderStruct {
 	var o HeaderOptions
 	if len(options) == 0 {
@@ -198,7 +198,7 @@ func (s *HeaderStruct) Process(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	// XSS Protection header.
-	if s.opt.BrowserXssFilter {
+	if s.opt.BrowserXXSSFilter {
 		w.Header().Add(xssProtectionHeader, xssProtectionValue)
 	}
 

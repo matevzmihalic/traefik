@@ -54,7 +54,7 @@ type Route struct {
 	Rule string `json:"rule,omitempty"`
 }
 
-// Header holds the custom header configuration
+// Headers holds the custom header configuration
 type Headers struct {
 	CustomRequestHeaders  map[string]string `json:"customrequestheaders,omitempty"`
 	CustomResponseHeaders map[string]string `json:"customresponseheaders,omitempty"`
