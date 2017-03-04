@@ -730,9 +730,9 @@ func (server *Server) loadConfig(configurations configs, globalConfiguration Glo
 						}
 
 						var negroni = negroni.New()
-						headerMiddleware := middlewares.NewHeader(middlewares.HeaderOptions{IsDevelopment: true})
+						headerMiddleware := middlewares.NewHeader(middlewares.HeaderOptions{CustomRequestHeaders: frontend.Headers.CustomRequestHeaders, CustomResponseHeaders: frontend.Headers.CustomResponseHeaders})
 						negroni.Use(headerMiddleware)
-						log.Debugf("Added Headers Middleware")
+						log.Debugf("Creating middleware for Frontend %s", frontendName)
 						if server.globalConfiguration.Web != nil && server.globalConfiguration.Web.Metrics != nil {
 							if server.globalConfiguration.Web.Metrics.Prometheus != nil {
 								metricsMiddlewareBackend := middlewares.NewMetricsWrapper(middlewares.NewPrometheus(frontend.Backend, server.globalConfiguration.Web.Metrics.Prometheus))

@@ -61,6 +61,10 @@ type HeaderOptions struct {
 	// When developing, the AllowedHosts, SSL, and STS options can cause some unwanted effects. Usually testing happens on http, not https, and on localhost, not your production domain... so set this to true for dev environment.
 	// If you would like your development environment to mimic production with complete Host blocking, SSL redirects, and STS headers, leave this as false. Default if false.
 	IsDevelopment bool
+	// If Custom request headers are set, these will be added to the request
+	CustomRequestHeaders map[string]string
+	// If Custom response headers are set, these will be added to the ResponseWriter
+	CustomResponseHeaders map[string]string
 }
 
 // headers is a middleware that helps setup a few basic security features. A single headerOptions struct can be
@@ -110,7 +114,7 @@ func (s *HeaderStruct) Handler(h http.Handler) http.Handler {
 }
 
 func (s *HeaderStruct) ServeHTTP(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-  err := s.Process(w, r)
+	err := s.Process(w, r)
 
 	// If there was an error, do not call next.
 	if err == nil && next != nil {
@@ -208,5 +212,18 @@ func (s *HeaderStruct) Process(w http.ResponseWriter, r *http.Request) error {
 		w.Header().Add(cspHeader, s.opt.ContentSecurityPolicy)
 	}
 
+	// Loop through Custom request headers
+	if len(s.opt.CustomRequestHeaders) > 0 {
+		for header, value := range s.opt.CustomRequestHeaders {
+			r.Header.Set(header, value)
+		}
+	}
+
+	// Loop through Custom response headers
+	if len(s.opt.CustomResponseHeaders) > 0 {
+		for header, value := range s.opt.CustomResponseHeaders {
+			w.Header().Add(header, value)
+		}
+	}
 	return nil
 }

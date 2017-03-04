@@ -54,6 +54,12 @@ type Route struct {
 	Rule string `json:"rule,omitempty"`
 }
 
+// Header holds the custom header configuration
+type Headers struct {
+	CustomRequestHeaders  map[string]string `json:"customrequestheaders,omitempty"`
+	CustomResponseHeaders map[string]string `json:"customresponseheaders,omitempty"`
+}
+
 // Frontend holds frontend configuration.
 type Frontend struct {
 	EntryPoints    []string         `json:"entryPoints,omitempty"`
@@ -61,6 +67,7 @@ type Frontend struct {
 	Routes         map[string]Route `json:"routes,omitempty"`
 	PassHostHeader bool             `json:"passHostHeader,omitempty"`
 	Priority       int              `json:"priority"`
+	Headers        Headers          `json:"headers,omitempty"`
 }
 
 // LoadBalancerMethod holds the method of load balancing to use.
