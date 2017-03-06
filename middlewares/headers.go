@@ -92,6 +92,7 @@ func NewHeader(options ...HeaderOptions) *HeaderStruct {
 	}
 }
 
+func NewHeaderOptionsFromFrontendHeaders ()
 // SetBadHostHandler sets the handler to call when secure rejects the host name.
 func (s *HeaderStruct) SetBadHostHandler(handler http.Handler) {
 	s.badHostHandler = handler
@@ -198,7 +199,7 @@ func (s *HeaderStruct) Process(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	// XSS Protection header.
-	if s.opt.BrowserXXSSFilter {
+	if s.opt.BrowserXSSFilter {
 		w.Header().Add(xssProtectionHeader, xssProtectionValue)
 	}
 
