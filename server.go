@@ -730,8 +730,6 @@ func (server *Server) loadConfig(configurations configs, globalConfiguration Glo
 						}
 
 						var negroni = negroni.New()
-						headerMiddleware := middlewares.NewHeader(middlewares.HeaderOptions{CustomRequestHeaders: frontend.Headers.CustomRequestHeaders, CustomResponseHeaders: frontend.Headers.CustomResponseHeaders})
-						negroni.Use(headerMiddleware)
 						log.Debugf("Creating middleware for Frontend %s", frontendName)
 						if server.globalConfiguration.Web != nil && server.globalConfiguration.Web.Metrics != nil {
 							if server.globalConfiguration.Web.Metrics.Prometheus != nil {
@@ -749,6 +747,9 @@ func (server *Server) loadConfig(configurations configs, globalConfiguration Glo
 							}
 							negroni.Use(cbreaker)
 						} else {
+							headerMiddleware := middlewares.NewHeader(middlewares.HeaderOptions{CustomRequestHeaders: frontend.Headers.CustomRequestHeaders, CustomResponseHeaders: frontend.Headers.CustomResponseHeaders})
+							negroni.Use(headerMiddleware)
+							log.Debugf("adding header middleware for frontend %s", frontendName)
 							negroni.UseHandler(lb)
 						}
 						backends[frontend.Backend] = negroni
@@ -758,7 +759,7 @@ func (server *Server) loadConfig(configurations configs, globalConfiguration Glo
 					if frontend.Priority > 0 {
 						newServerRoute.route.Priority(frontend.Priority)
 					}
-					server.wireFrontendBackend(newServerRoute, backends[frontend.Backend])
+						server.wireFrontendBackend(newServerRoute, backends[frontend.Backend])
 				}
 				err := newServerRoute.route.GetError()
 				if err != nil {

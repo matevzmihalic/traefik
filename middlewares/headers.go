@@ -92,7 +92,6 @@ func NewHeader(options ...HeaderOptions) *HeaderStruct {
 	}
 }
 
-func NewHeaderOptionsFromFrontendHeaders ()
 // SetBadHostHandler sets the handler to call when secure rejects the host name.
 func (s *HeaderStruct) SetBadHostHandler(handler http.Handler) {
 	s.badHostHandler = handler
