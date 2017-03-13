@@ -20,6 +20,7 @@ const (
 	xssProtectionValue  = "1; mode=block"
 	cspHeader           = "Content-Security-Policy"
 	hpkpHeader          = "Public-Key-Pins"
+	corsMethodHeader    = "Access-Control-Allow-Methods"
 )
 
 func defaultBadHostHandler(w http.ResponseWriter, r *http.Request) {
@@ -225,5 +226,12 @@ func (s *HeaderStruct) Process(w http.ResponseWriter, r *http.Request) error {
 			w.Header().Add(header, value)
 		}
 	}
+
+	_, ok := s.opt.CustomResponseHeaders[corsMethodHeader]
+	if ok && r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusNoContent)
+		return fmt.Errorf("CORS preflight request")
+	}
+
 	return nil
 }
