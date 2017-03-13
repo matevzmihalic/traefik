@@ -36,4 +36,11 @@
   {{end}}]
     [frontends."frontend-{{$frontend}}".routes."route-frontend-{{$frontend}}"]
     rule = "{{getFrontendRule $container}}"
+  {{$headers := getHeaders $container}}
+    [frontends."frontend-{{$frontend}}".headers.customrequestheaders]{{range $header, $value := $headers.CustomRequestHeaders}}
+    "{{$header}}" = "{{$value}}"
+    {{end}}
+    [frontends."frontend-{{$frontend}}".headers.customresponseheaders]{{range $header, $value := $headers.CustomResponseHeaders}}
+    "{{$header}}" = "{{$value}}"
+    {{end}}
 {{end}}

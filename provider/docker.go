@@ -6,6 +6,7 @@ import (
 	"math"
 	"net"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"text/template"
@@ -258,6 +259,7 @@ func (provider *Docker) loadDockerConfig(containersInspected []dockerData) *type
 		"getMaxConnExtractorFunc":     provider.getMaxConnExtractorFunc,
 		"getSticky":                   provider.getSticky,
 		"getIsBackendLBSwarm":         provider.getIsBackendLBSwarm,
+		"getHeaders":                  provider.getHeaders,
 	}
 	// filter containers
 	filteredContainers := fun.Filter(func(container dockerData) bool {
@@ -467,6 +469,28 @@ func (provider *Docker) getIsBackendLBSwarm(container dockerData) string {
 		return label
 	}
 	return "false"
+}
+
+func (provider *Docker) getHeaders(container dockerData) types.Headers {
+	headersRe := regexp.MustCompile(`(?i)^traefik\.frontend\.headers\.(request|response)\.(.*?)$`)
+	headers := types.Headers{
+		CustomRequestHeaders:  map[string]string{},
+		CustomResponseHeaders: map[string]string{},
+	}
+
+	for key, value := range container.Labels {
+		result := headersRe.FindStringSubmatch(key)
+		if len(result) > 0 {
+			switch strings.ToLower(result[1]) {
+			case "request":
+				headers.CustomRequestHeaders[result[2]] = value
+			case "response":
+				headers.CustomResponseHeaders[result[2]] = value
+			}
+		}
+	}
+
+	return headers
 }
 
 func (provider *Docker) getDomain(container dockerData) string {
