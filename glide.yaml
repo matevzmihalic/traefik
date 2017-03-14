@@ -139,3 +139,5 @@ import:
   - proto
 - package: github.com/rancher/go-rancher
   version: 5b8f6cc26b355ba03d7611fce3844155b7baf05b
+- package: github.com/rs/cors
+  version: ^1.0.0
